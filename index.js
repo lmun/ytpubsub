@@ -89,7 +89,8 @@ pubsub.on('unsubscribe', (data) => {
 pubsub.on('error', (error) => {
   logger.error({
     message: 'pubSubError',
-    error,
+    errormsg: error.message,
+    errorStack: error.stack,
   });
 });
 
@@ -192,7 +193,8 @@ setInterval(() => {
       } catch (error) {
         logger.error({
           message: 'feedError',
-          error,
+          errormsg: error.message,
+          errorStack: error.stack,
         });
       }
     });
@@ -219,7 +221,8 @@ setInterval(() => {
   } catch (error) {
     logger.error({
       message: 'MongoDBError',
-      error,
+      errormsg: error.message,
+      errorStack: error.stack,
     });
   }
 }());
