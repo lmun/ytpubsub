@@ -114,22 +114,23 @@ function subscribe(canal) {
 // every hour check for subscriptions about to expire within the day
 setInterval(() => {
   Object.values(mapaCanales).forEach((canal) => {
-    if (mapaCanales[canal].subscribed) {
+    if (canal.subscribed) {
       const now = new Date().getTime();
-      const diff = now - mapaCanales[canal].subscribeDate;
-      if (diff + (24 * 60 * 60 * 1000) > mapaCanales[canal].lease) {
+      const diff = now - canal.subscribeDate;
+      if (diff + (24 * 60 * 60 * 1000) > canal.lease) {
         logger.info({
           message: 'Renewing subscription',
           canal,
         });
         subscribe(canal);
       }
-      if (diff > mapaCanales[canal].lease) {
+      if (diff > canal.lease) {
         logger.info({
           message: 'Subscription expired',
           canal,
         });
-        mapaCanales[canal].subscribed = false;
+        // eslint-disable-next-line no-param-reassign
+        canal.subscribed = false;
       }
     }
   });
