@@ -124,6 +124,13 @@ setInterval(() => {
         });
         subscribe(canal);
       }
+      if (diff > mapaCanales[canal].lease) {
+        logger.info({
+          message: 'Subscription expired',
+          canal,
+        });
+        mapaCanales[canal].subscribed = false;
+      }
     }
   });
 }, 1000 * 60 * 60);
