@@ -130,6 +130,8 @@ setInterval(() => {
             } catch (error) {
               logger.error({
                 message: 'Error renewing subscription',
+                errormsg: error.message,
+                errorStack: error.stack,
                 canal,
               });
             }
@@ -147,6 +149,8 @@ setInterval(() => {
     } catch (error) {
       logger.error({
         message: 'Error checking subscription',
+        errormsg: error.message,
+        errorStack: error.stack,
         canal,
       });
     }
@@ -211,6 +215,7 @@ setInterval(() => {
           message: 'feedError',
           errormsg: error.message,
           errorStack: error.stack,
+          feed: data.feed.toString(),
         });
       }
     });
