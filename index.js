@@ -114,25 +114,41 @@ function subscribe(canal) {
 
 // every hour check for subscriptions about to expire within the day
 setInterval(() => {
-  Object.values(mapaCanales).forEach((canal) => {
-    if (canal.subscribed) {
-      const now = new Date().getTime();
-      const diff = now - canal.subscribeDate;
-      if (diff + (24 * 60 * 60 * 1000) > canal.lease) {
-        logger.info({
-          message: 'Renewing subscription',
-          canal,
-        });
-        subscribe(canal);
+  Object.values(mapaCanales).forEach((canal, ind) => {
+    try {
+      if (canal.subscribed) {
+        const now = new Date().getTime();
+        const diff = now - canal.subscribeDate;
+        if (diff + (24 * 60 * 60 * 1000) > canal.lease) {
+          logger.info({
+            message: 'Renewing subscription',
+            canal,
+          });
+          setTimeout(() => {
+            try {
+              subscribe(canal.id)
+            } catch (error) {
+              logger.error({
+                message: 'Error renewing subscription',
+                canal,
+              });
+            }
+          }, ind * 1000);
+        }
+        if (diff > canal.lease) {
+          logger.info({
+            message: 'Subscription expired',
+            canal,
+          });
+          // eslint-disable-next-line no-param-reassign
+          canal.subscribed = false;
+        }
       }
-      if (diff > canal.lease) {
-        logger.info({
-          message: 'Subscription expired',
-          canal,
-        });
-        // eslint-disable-next-line no-param-reassign
-        canal.subscribed = false;
-      }
+    } catch (error) {
+      logger.error({
+        message: 'Error checking subscription',
+        canal,
+      });
     }
   });
 }, 1000 * 60 * 60);
